@@ -1,4 +1,4 @@
-## CentOS 7: Docker, Nginx, and php-fpm
+## CentOS 8: Nginx, php-fpm, openssh
 
 This will build the neccessary services (nginx and php-fpm) to serve php files.
 
