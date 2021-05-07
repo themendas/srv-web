@@ -7,10 +7,14 @@
 # =============================================================================
 
 
-
 FROM centos:8
 MAINTAINER TheMendas <borjavilaplana@gmail.com>
 ENV container docker
+ARG USER=imagar
+ARG PASS=1m4g4r
+ARG UID=502
+ARG GID=502
+
 
 # Instalar PHP 8
 RUN dnf -y install epel-release \
@@ -40,6 +44,7 @@ RUN dnf -y install php \
                php-pecl-memcached \
                php-pecl-imagick \
                npm \
+               git \
     && dnf clean all \
     && rm -rf /var/cache/yum
 
@@ -57,14 +62,14 @@ RUN curl -sS https://getcomposer.org/installer | php \
 
 
 #Add-User
-RUN groupadd -g 501 imagar && \
-    useradd -g 501 -u 501 -M -d /opt/app imagar && \
-    usermod -a -G apache imagar && \
-    usermod -a -G imagar apache && \
+RUN groupadd -g $GID $USER && \
+    useradd -g $GID -u $UID -M -d /opt/app $USER && \
+    usermod -a -G nginx $USER && \
+    usermod -a -G $USER nginx && \
     echo 'imagar:1m4g4r' | chpasswd && \
-    mkdir -p /home/imagar/.ssh && \
-    chown -R imagar:imagar /home/imagar/.ssh && \
-    chmod 700 /home/imagar/.ssh
+    mkdir -p /home/$USER/.ssh && \
+    chown -R $USER:$USER /home/$USER/.ssh && \
+    chmod 700 /home/$USER/.ssh
 
 RUN usermod -d /opt/app -s /bin/false nginx
 
