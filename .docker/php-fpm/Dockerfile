@@ -39,6 +39,7 @@ RUN dnf -y install php \
                php-pecl-zip \
                php-pecl-memcached \
                php-pecl-imagick \
+               npm \
     && dnf clean all \
     && rm -rf /var/cache/yum
 
@@ -76,14 +77,14 @@ RUN mkdir -p /var/lib/php/session && \
 COPY ./.docker/php-fpm/php-fpm.conf /etc/php-fpm.conf
 COPY ./.docker/php-fpm/www.conf /etc/php-fpm.d/www.conf
 COPY ./.docker/php-fpm/php.ini /etc/php.ini
-COPY ./.docker/php-fpm/entrypoint.sh /
+
 
 ## WEB
 COPY ./app /opt/app/
 
 expose 9000 22
 
-#CMD  [php-fpm, "&&","/usr/sbin/sshd", "-D"]
+COPY ./.docker/php-fpm/entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /opt/app/

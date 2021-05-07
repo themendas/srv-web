@@ -21,5 +21,8 @@ COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./.docker/nginx/app.conf /etc/nginx/conf.d/app.conf
 
 expose 80
-CMD nginx
+
+COPY ./.docker/nginx/entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+
 WORKDIR /opt/app/
