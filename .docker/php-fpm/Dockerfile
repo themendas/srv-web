@@ -42,6 +42,29 @@ RUN dnf -y install php \
     && dnf clean all \
     && rm -rf /var/cache/yum
 
+#Open SSH Server
+RUN dnf -y install openssh-server
+RUN mkdir -p /var/run/sshd
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+RUN sed -ri 's/#UsePAM no/UsePAM no/g' /etc/ssh/sshd_config
+RUN ssh-keygen -A
+
+# Add composer
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
+
+
+#Add-User
+RUN groupadd -g 501 imagar && \
+    useradd -g 501 -u 501 -M -d /opt/app imagar && \
+    usermod -a -G apache imagar && \
+    usermod -a -G imagar apache && \
+    echo 'imagar:1m4g4r' | chpasswd && \
+    mkdir -p /home/imagar/.ssh && \
+    chown -R imagar:imagar /home/imagar/.ssh && \
+    chmod 700 /home/imagar/.ssh
+
 RUN usermod -d /opt/app -s /bin/false nginx
 
 RUN mkdir -p /run/php-fpm && \
@@ -53,8 +76,14 @@ RUN mkdir -p /var/lib/php/session && \
 COPY ./.docker/php-fpm/php-fpm.conf /etc/php-fpm.conf
 COPY ./.docker/php-fpm/www.conf /etc/php-fpm.d/www.conf
 COPY ./.docker/php-fpm/php.ini /etc/php.ini
+COPY ./.docker/php-fpm/entrypoint.sh /
 
-expose 9000
+## WEB
+COPY ./app /opt/app/
 
-CMD php-fpm
+expose 9000 22
+
+#CMD  [php-fpm, "&&","/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["/entrypoint.sh"]
+
 WORKDIR /opt/app/
