@@ -4,21 +4,17 @@ services:
     container_name: ${APP_NAME}-nginx
     build:
       context: .
-      args:
-        USER: ${SFTP_USER}
-        PASS: ${SFTP_PASS}
-        UID: ${SFTP_UID}
-        GID: ${SFTP_GID}
       dockerfile: .docker/nginx/Dockerfile
+
     env_file: .env
-    
-    ports:
-      - "${PORT_NGINX}:80"
     stdin_open: true
     tty: true
+    ports:
+      - "${PORT_NGINX}:80"
+
     volumes:
       - /etc/localtime:/etc/localtime
-      - ./conf/app.conf:/etc/nginx/conf.d/app.conf
+      - ./conf/app.conf:/etc/nginx/conf.d/app.conf:ro
       - ./app:/opt/app
     
     
@@ -27,12 +23,38 @@ services:
     build:
       context: .
       dockerfile: .docker/php-fpm/Dockerfile
+      args:
+        USER: ${SFTP_USER}
+        PASS: ${SFTP_PASS}
+        UID: ${SFTP_UID}
+        GID: ${SFTP_GID}
     env_file: .env
+    stdin_open: true
+    tty: true
     ports:
       - "${PORT_SSH}:22"
     volumes:
       - /etc/localtime:/etc/localtime
-      - ./conf/php.ini:/etc/php.ini
+      - ./conf/php.ini:/etc/php.ini:ro
       - ./app:/opt/app
+
+  
+  mysql:
+    container_name: ${APP_NAME}-mysql
+    build:
+      context: .
+      dockerfile: .docker/mysql/Dockerfile
+    env_file: .env
     stdin_open: true
     tty: true
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${PORT_MYSQL}:3306"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./db:/var/lib/mysql
+      - ./conf/my.cnf:/etc/mysql/conf.d/my-docker.cnf:ro

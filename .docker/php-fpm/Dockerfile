@@ -1,6 +1,6 @@
 
 # =============================================================================
-# themendas/centos-nginx-php
+# themendas/srv-web
 #
 # CentOS-8, PHP-FPM 8.0
 # 
@@ -9,12 +9,37 @@
 
 FROM centos:8
 MAINTAINER TheMendas <borjavilaplana@gmail.com>
-ENV container docker
-ARG USER=imagar
-ARG PASS=1m4g4r
-ARG UID=502
-ARG GID=502
 
+##
+## Labels
+##
+LABEL \
+	name="themendas PHP-FPM 8.0 Image" \
+	image="php-fmp-8.0" \
+	vendor="themendas" \
+	license="MIT" \
+	build-date="2021-05-08"
+
+
+##
+## VARS
+##
+
+ENV container docker
+ARG USER
+ARG PASS
+ARG UID
+ARG GID
+
+##
+## UPDATE
+##
+
+RUN dnf update -y
+
+##
+## INSTALL
+##
 
 # Instalar PHP 8
 RUN dnf -y install epel-release \
@@ -60,16 +85,9 @@ RUN ssh-keygen -A
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 
-
-#Add-User
-RUN groupadd -g $GID $USER && \
-    useradd -g $GID -u $UID -M -d /opt/app $USER && \
-    usermod -a -G nginx $USER && \
-    usermod -a -G $USER nginx && \
-    echo 'imagar:1m4g4r' | chpasswd && \
-    mkdir -p /home/$USER/.ssh && \
-    chown -R $USER:$USER /home/$USER/.ssh && \
-    chmod 700 /home/$USER/.ssh
+##
+## Nginx User
+##
 
 RUN usermod -d /opt/app -s /bin/false nginx
 
@@ -79,17 +97,49 @@ RUN mkdir -p /run/php-fpm && \
 RUN mkdir -p /var/lib/php/session && \
     chown nginx:nginx /var/lib/php/session
 
+
+##
+## Add-User
+##
+
+RUN groupadd -g $GID $USER && \
+    useradd -g $GID -u $UID -M -d /opt/app $USER && \
+    usermod -a -G root $USER && \
+    usermod -a -G $USER root && \
+    echo 'imagar:1m4g4r' | chpasswd && \
+    mkdir -p /home/$USER/.ssh && \
+    chown -R $USER:$USER /home/$USER/.ssh && \
+    chmod 700 /home/$USER/.ssh
+    
+##
+## Copy Configuration
+##
+
 COPY ./.docker/php-fpm/php-fpm.conf /etc/php-fpm.conf
 COPY ./.docker/php-fpm/www.conf /etc/php-fpm.d/www.conf
 COPY ./.docker/php-fpm/php.ini /etc/php.ini
 
 
-## WEB
+##
+## Copy Code WEB
+##
+
 COPY ./app /opt/app/
 
 expose 9000 22
 
+##
+## Bootstrap Scipts
+##
 COPY ./.docker/php-fpm/entrypoint.sh /
+
+##
+## Entrypoint
+##
 ENTRYPOINT ["/entrypoint.sh"]
 
+##
+## Directorio Trabajo
+##
 WORKDIR /opt/app/
+
