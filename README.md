@@ -1,8 +1,8 @@
 # CentOS 8: Nginx, php-fpm (con-ssh), mysql
 
-This will build the neccessary services (nginx and php-fpm) to serve php files.
+## COMPOSICION
 
-##
+Se compone de tres contenedores con los siguientes contenidos:
 
 **NGINX 1.14 Docker on CentOS 8**
 
@@ -22,6 +22,7 @@ This will build the neccessary services (nginx and php-fpm) to serve php files.
 ## Directorios
 
 | DIR | Description |
+|----------|-------------|
 | SSH DIR  | /opt/app |
 | WEB  | /opt/app/public |
 
@@ -54,4 +55,4 @@ Leera todas las variables del archivo .env (renombrar archivo .env-example)
 docker-compose -f docker-compose.yml up
 ```
 
-The example php website should be accessible at http://localhost
+Para el acceso a la web de ejemplo: http://localhost

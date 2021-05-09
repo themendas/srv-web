@@ -38,7 +38,6 @@ services:
       - ./conf/php.ini:/etc/php.ini:ro
       - ./app:/opt/app
 
-  
   mysql:
     container_name: ${APP_NAME}-mysql
     build:
@@ -57,4 +56,4 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime
       - ./db:/var/lib/mysql
-      - ./conf/my.cnf:/etc/mysql/conf.d/my-docker.cnf:ro
+      - ./conf/my.cnf:/etc/my.cnf.d/docker.cnf:ro
