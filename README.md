@@ -7,6 +7,8 @@ Se compone de tres contenedores con los siguientes contenidos:
 **NGINX 1.14 Docker on CentOS 8**
 
  Servidor NGINX con Reverse Proxy a PHP-FPM
+
+*Define php-fpm host = "php-fpm:9000"
  
 **PHP FPM 8.0 Docker on CentOS 8**
 
@@ -14,8 +16,9 @@ Se compone de tres contenedores con los siguientes contenidos:
   - Composer
   - NPM
   - SSH Exec
+* Define database host = "mysql:3306"
 
-**MySQL 8.0 Docker on OracleLinux 8 **
+**MySQL 8.0 Docker on OracleLinux 8**
 
  Servidor Oracle Linux con Mysql Server 8
 
