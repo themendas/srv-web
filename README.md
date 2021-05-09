@@ -15,9 +15,9 @@ Se compone de tres contenedores con los siguientes contenidos:
   - NPM
   - SSH Exec
 
-**MySQL 8.0 Docker on CentOS 8**
+**MySQL 8.0 Docker on OracleLinux 8 **
 
- Servidor Mysql
+ Servidor Oracle Linux con Mysql Server 8
 
 ## Directorios
 

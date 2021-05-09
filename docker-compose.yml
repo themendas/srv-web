@@ -12,6 +12,9 @@ services:
     ports:
       - "${PORT_NGINX}:80"
 
+    links:
+     - php-fpm
+     
     volumes:
       - /etc/localtime:/etc/localtime
       - ./conf/app.conf:/etc/nginx/conf.d/app.conf:ro
@@ -33,6 +36,10 @@ services:
     tty: true
     ports:
       - "${PORT_SSH}:22"
+      
+    links:
+     - mysql
+
     volumes:
       - /etc/localtime:/etc/localtime
       - ./conf/php.ini:/etc/php.ini:ro
@@ -51,8 +58,10 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      
     ports:
       - "${PORT_MYSQL}:3306"
+
     volumes:
       - /etc/localtime:/etc/localtime
       - ./db:/var/lib/mysql
