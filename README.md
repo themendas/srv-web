@@ -4,21 +4,28 @@
 
 Se compone de tres contenedores con los siguientes contenidos:
 
-**NGINX 1.14 Docker on CentOS 8**
+| CONTAINER | VERISIONS |
+|----------|-------------|
+| NGINX  | 1.14.1 |
+| PHP-FPM  | 8.0.6 |
+| MYSQL  | 8.0.24 |
+
+**NGINX Docker on CentOS 8**
 
  Servidor NGINX con Reverse Proxy a PHP-FPM
 
 *Define php-fpm host = "php-fpm:9000"
  
-**PHP FPM 8.0 Docker on CentOS 8**
+**PHP FPM Docker on CentOS 8**
 
  Servidor PHP-FPM con los siguientes opciones:
   - Composer
   - NPM
   - SSH Exec
-* Define database host = "mysql:3306"
 
-**MySQL 8.0 Docker on OracleLinux 8**
+*Define database host = "mysql:3306"
+
+**MySQL Docker on OracleLinux 8 **
 
  Servidor Oracle Linux con Mysql Server 8
 
@@ -55,7 +62,11 @@ Leera todas las variables del archivo .env (renombrar archivo .env-example)
 ## INICIAR
 
 ```
-docker-compose -f docker-compose.yml up
+mv .env-example .env
+```
+
+```
+docker-compose -f docker-compose.yml up --build
 ```
 
 Para el acceso a la web de ejemplo: http://localhost
